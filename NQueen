@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 20  // Maximum board size
+
+int board[MAX];
+
+// Function to check if placing a queen at board[row] = col is safe
+int isSafe(int row, int col) {
+    for (int i = 0; i < row; i++) {
+        if (board[i] == col || 
+            abs(board[i] - col) == abs(i - row)) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+// Recursive function to solve N-Queens
+void solveNQueens(int row, int n, int* solutionCount) {
+    if (row == n) {
+        (*solutionCount)++;
+        printf("Solution %d:\n", *solutionCount);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (board[i] == j)
+                    printf("Q ");
+                else
+                    printf(". ");
+            }
+            printf("\n");
+        }
+        printf("\n");
+        return;
+    }
+
+    for (int col = 0; col < n; col++) {
+        if (isSafe(row, col)) {
+            board[row] = col;  // Place queen
+            solveNQueens(row + 1, n, solutionCount);
+            // No need to reset board[row] because it will be overwritten
+        }
+    }
+}
+
+int main() {
+    int n;
+    printf("Enter number of queens: ");
+    scanf("%d", &n);
+
+    if (n < 1 || n > MAX) {
+        printf("Board size should be between 1 and %d\n", MAX);
+        return 1;
+    }
+
+    int solutionCount = 0;
+    solveNQueens(0, n, &solutionCount);
+
+    printf("Total solutions: %d\n", solutionCount);
+    return 0;
+}
